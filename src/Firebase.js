@@ -16,9 +16,11 @@ const Firebase = (() => {
 	const database = firebase.firestore();
 
 	const getUsers = async () => {
+		const userUID = firebase.auth().currentUser.uid;
 		return (await database.collection('users').get()).docs.map((doc) => {
 			return {
 				...doc.data(),
+				role: doc.id === userUID ? 'admin' : 'user',
 			};
 		});
 	};
