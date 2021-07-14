@@ -13,9 +13,10 @@ const App = () => {
 	const [viewingUserDetail, setViewingUserDetail] = useState(null);
 
 	const login = async (username, password) => {
-		if (await Firebase.login(username, password)) {
-			const userRole = (await Firebase.getUser(username)).role;
-			setLoggedInUser(username);
+		const userUID = await Firebase.login(username, password);
+		if (userUID !== false) {
+			const userRole = await Firebase.getUserRole(userUID);
+			setLoggedInUser(userUID);
 			setCurrentPage(userRole !== 'admin' ? 'user-page' : 'admin-page');
 			return true;
 		}
@@ -44,6 +45,7 @@ const App = () => {
 	};
 
 	const logout = () => {
+		Firebase.logout();
 		setCurrentPage('login');
 		setLoggedInUser(null);
 	};

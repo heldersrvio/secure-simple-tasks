@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
 const Login = (props) => {
-	const [userNameInput, setUserNameInput] = useState('');
+	const [emailInput, setEmailInput] = useState('');
 	const [passwordInput, setPasswordInput] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const validateAndLogin = async () => {
-		if (userNameInput.length === 0 || passwordInput.length === 0) {
+		if (emailInput.length === 0 || passwordInput.length === 0) {
 			setErrorMessage('Dados inválidos');
 		} else {
-			const isLoginSuccessful = await props.login(userNameInput, passwordInput);
+			const isLoginSuccessful = await props.login(emailInput, passwordInput);
 			setErrorMessage(isLoginSuccessful ? '' : 'Dados inválidos');
 		}
 	};
@@ -20,10 +20,10 @@ const Login = (props) => {
 		<div className="login">
 			<h1>Login</h1>
 			<input
-				type="text"
-				placeholder="Nome de usuário"
-				value={userNameInput}
-				onChange={(e) => setUserNameInput(e.target.value)}
+				type="email"
+				placeholder="Email"
+				value={emailInput}
+				onChange={(e) => setEmailInput(e.target.value)}
 			></input>
 			<input
 				type="password"

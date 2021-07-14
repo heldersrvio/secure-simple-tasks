@@ -1,14 +1,15 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/auth';
 
 const Firebase = (() => {
 	const firebaseConfig = {
-		apiKey: 'AIzaSyDPD5b6fyqQh5J-FnZMYYgpp_L-CQubjIo',
-		authDomain: 'simple-tasks-734ac.firebaseapp.com',
-		projectId: 'simple-tasks-734ac',
-		storageBucket: 'simple-tasks-734ac.appspot.com',
-		messagingSenderId: '373484943675',
-		appId: '1:373484943675:web:b52e1585d6b1d56d3c1f1e',
+		apiKey: 'AIzaSyBWkRBU1UeQsmoV2Ef8_ZUa34TIObUMeOE',
+		authDomain: 'simple-tasks-5d0fc.firebaseapp.com',
+		projectId: 'simple-tasks-5d0fc',
+		storageBucket: 'simple-tasks-5d0fc.appspot.com',
+		messagingSenderId: '820423957853',
+		appId: '1:820423957853:web:37e19e6a8a65999c561cb4',
 	};
 
 	firebase.initializeApp(firebaseConfig);
@@ -17,61 +18,83 @@ const Firebase = (() => {
 	const getUsers = async () => {
 		return (await database.collection('users').get()).docs.map((doc) => {
 			return {
-				userName: doc.id,
 				...doc.data(),
 			};
 		});
 	};
 
-	const getUser = async (userName) => {
-		const userDoc = await database.collection('users').doc(userName).get();
-		if (userDoc.exists) {
-			return {
-				userName: userDoc.id,
-				...userDoc.data(),
-			};
+	const getUser = async () => {
+		const userUID = firebase.auth().currentUser.uid;
+		if (userUID !== null && userUID !== undefined) {
+			const userDoc = await database.collection('users').doc(userUID).get();
+			if (userDoc.exists) {
+				return {
+					...userDoc.data(),
+				};
+			}
 		}
 		throw new Error('Username does not exist');
 	};
 
 	const createUser = async (userName, name, email, password) => {
 		try {
-			await getUser(userName);
-			return false;
-		} catch (_error) {
+			const userCredential = await firebase
+				.auth()
+				.createUserWithEmailAndPassword(email, password);
 			await database
 				.collection('users')
-				.doc(userName)
-				.set({ name, email, password, tasks: [], role: 'user' });
+				.doc(userCredential.user.uid)
+				.set({ userName, name, email, tasks: [] });
 			return true;
-		}
-	};
-
-	const login = async (userName, password) => {
-		try {
-			return (await getUser(userName)).password === password;
 		} catch (_error) {
 			return false;
 		}
 	};
 
-	const addTask = async (userName, task) => {
-		const userTasks = (await getUser(userName)).tasks;
+	const login = async (email, password) => {
+		try {
+			const userCredential = await firebase
+				.auth()
+				.signInWithEmailAndPassword(email, password);
+			return userCredential.user.uid;
+		} catch (_error) {
+			return false;
+		}
+	};
+
+	const logout = async () => {
+		await firebase.auth().signOut();
+	};
+
+	const addTask = async (userUID, task) => {
+		const userTasks = (await getUser(userUID)).tasks;
 		await database
 			.collection('users')
-			.doc(userName)
+			.doc(userUID)
 			.set({ tasks: userTasks.concat(task) }, { merge: true });
 	};
 
-	const deleteTask = async (userName, index) => {
-		const userTasks = (await getUser(userName)).tasks;
+	const deleteTask = async (userUID, index) => {
+		const userTasks = (await getUser(userUID)).tasks;
 		await database
 			.collection('users')
-			.doc(userName)
+			.doc(userUID)
 			.set(
 				{ tasks: userTasks.filter((_t, i) => i !== index) },
 				{ merge: true }
 			);
+	};
+
+	const getUserRole = async (userUID) => {
+		try {
+			return (await database.collection('roles').doc('admin').get())
+				.data()
+				.users.includes(userUID)
+				? 'admin'
+				: 'user';
+		} catch {
+			return 'user';
+		}
 	};
 
 	return {
@@ -79,8 +102,10 @@ const Firebase = (() => {
 		getUser,
 		createUser,
 		login,
+		logout,
 		addTask,
 		deleteTask,
+		getUserRole,
 	};
 })();
 
