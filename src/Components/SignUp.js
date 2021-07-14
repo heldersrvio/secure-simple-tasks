@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import validator from 'validator';
 import PropTypes from 'prop-types';
 import '../Styles/SignUp.css';
 
@@ -10,6 +11,16 @@ const SignUp = (props) => {
 	const [passwordAgainInput, setPasswordAgainInput] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 	const [isFinished, setIsFinished] = useState(false);
+
+	const validatePassword = (value) => {
+		return validator.isStrongPassword(value, {
+			minLength: 8,
+			minLowercase: 1,
+			minUppercase: 1,
+			minNumbers: 1,
+			minSymbols: 0,
+		});
+	};
 
 	const verifyAndSignUp = async () => {
 		if (
@@ -24,6 +35,10 @@ const SignUp = (props) => {
 			setErrorMessage('Preencha todos os dados');
 		} else if (passwordInput !== passwordAgainInput) {
 			setErrorMessage('Senhas não batem');
+		} else if (!validatePassword(passwordInput)) {
+			setErrorMessage(
+				'Senha não é forte o suficiente — deve conter pelo menos 8 caracteres, 1 letra minúscula, 1 letra maiúscula e 1 número'
+			);
 		} else {
 			const wasSuccessful = await props.signUp(
 				userNameInput,

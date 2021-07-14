@@ -87,9 +87,8 @@ const Firebase = (() => {
 
 	const getUserRole = async (userUID) => {
 		try {
-			return (await database.collection('roles').doc('admin').get())
-				.data()
-				.users.includes(userUID)
+			return (await database.collection('roles').doc('admin').get()).data()
+				.user === userUID
 				? 'admin'
 				: 'user';
 		} catch {
