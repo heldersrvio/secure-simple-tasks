@@ -1,0 +1,44 @@
+.sign-up {
+	background-color: rgb(194, 194, 194);
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.sign-up input {
+	margin: 5px 0;
+	border-radius: 3px;
+	border: none;
+	padding: 5px;
+	width: 300px;
+	font-size: 14px;
+}
+
+.sign-up .name-input,
+.sign-up .sign-up-successful-span {
+	margin-top: 18%;
+}
+
+.sign-up .sign-up-successful-span {
+	margin-bottom: 15px;
+	color: rgb(0, 124, 0);
+}
+
+.sign-up button {
+	border-radius: 3px;
+	padding: 7px;
+	border: 1px solid rgb(0, 0, 0);
+	background-color: rgb(255, 255, 255);
+	margin: 5px 0;
+}
+
+.sign-up button:hover {
+	transform: scale(1.05);
+}
+
+.sign-up .sign-up-error-span {
+	color: rgb(255, 0, 0);
+	margin: 10px 0;
+	font-size: 14px;
+}

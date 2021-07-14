@@ -1,0 +1,42 @@
+.user-detail-page {
+	height: 100vh;
+	background-color: rgb(196, 196, 196);
+	padding: 15px 30px;
+}
+
+.user-detail-page .header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 30px;
+}
+
+.user-detail-page .header button {
+	background-color: transparent;
+	border: none;
+	margin-right: 20px;
+}
+
+.user-detail-page .header h1 {
+	font-size: 20px;
+}
+
+.user-detail-page .user-info-section > div {
+	margin: 15px 0;
+}
+
+.user-detail-page .user-info-section ul {
+	margin-left: 10px;
+	list-style-type: disc;
+	list-style: disc outside none;
+}
+
+.user-detail-page .user-info-tasks-section label {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.user-detail-page .user-info-tasks-section li {
+	display: list-item;
+	margin: 1em;
+}
